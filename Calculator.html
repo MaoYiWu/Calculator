@@ -1,0 +1,248 @@
+<!--
+	需求：
+		1.显示界面需要由一般计算器应有的按键
+		2.鼠标点击‘C’键清空显示框
+		3.鼠标点击‘=’显示计算结果
+		4.不允许连续输入运算符（eg：++， +/）
+		5.不允许‘/’后输入0
+		6.不允许用户通过鼠标点击按键以外的方式操作显示框
+		7.初始时，要求用户输入数字或者‘C’
+		8.要求用户按键输入除了‘C’和‘=’以外的按键，并显示在显示框中
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>简易计算器</title>
+		
+		<!--CSS样式表-->
+		<style type="text/css">
+			
+			*
+			{
+				padding: 0;
+				margin: 0;	
+			}
+			
+			.calculator
+			{
+				border: 2px solid burlywood;
+				width: 300px;
+				height: 418px;
+				border-radius: calc(10px);
+				background:beige;
+				margin: 0 auto;
+			}
+			
+			.cal_ibox
+			{
+				margin: 18px 4px 0px 4px;
+				width: 292px;
+			}
+			
+			.cal_ibox input 
+			{
+				width: 290px ;
+				height: 45px;
+				border: 1px solid midnightblue;
+				border-radius: calc(8px);
+				text-align: right;
+				font-size: 25px;
+			}
+			
+			.cal_bottom
+			{
+				border: 0px solid black;
+				width: 284px ;
+				height:348px;
+				margin: 10px auto;
+				
+			}
+			
+			.cal_bottom input
+			{
+				border-radius:calc(30px);
+				width: 60px;
+				font-size: 30px;
+				padding: 9px 9px;
+				background: bisque;
+				margin: 2px 4px 4px 3px;
+			}
+			
+					
+			
+		</style>
+		
+		
+	</head>
+	<body>
+		<div class="calculator">
+			<div class = "calc_top">
+				<!--calculator显示框-->
+				<div class="cal_ibox">
+					<input type="text" id = "ipt_text" readonly="readonly" value="0"/>
+					<br /><hr style="margin-top: 12px;" />
+				</div>
+			</div>
+		
+			<div class = "cal_bottom">
+				<input type="button" id = "btc" onclick="clearall()"	value = "C" style="width: 128px" />
+				<input type="button" id = "btnegnum" onclick="InputKeyOp('btnegnum')" value = "+/-"/>
+				<input type="button" id = "btadd" onclick="InputKeyOp('btadd')"	 value = "+" />
+				<input type="button" id = "bt7"	onclick="InputKeyNum('bt7')" value = "7" />
+				<input type="button" id = "bt8"	onclick="InputKeyNum('bt8')" value = "8" />
+				<input type="button" id = "bt9"	onclick="InputKeyNum('bt9')" value = "9" />
+				<input type="button" id = "btmins" onclick="InputKeyOp('btmins')"	 value = "-" />
+				<input type="button" id = "bt4"	onclick="InputKeyNum('bt4')" value = "4" />
+				<input type="button" id = "bt5"	onclick="InputKeyNum('bt5')" value = "5" />
+				<input type="button" id = "bt6"	onclick="InputKeyNum('bt6')" value = "6" />
+				<input type="button" id = "btmul" onclick="InputKeyOp('btmul')" value = "*" />
+				<input type="button" id = "bt1"	onclick="InputKeyNum('bt1')" value = "1" />
+				<input type="button" id = "bt2"	onclick="InputKeyNum('bt2')" value = "2" />
+				<input type="button" id = "bt3"	onclick="InputKeyNum('bt3')" value = "3" />
+				<input type="button" id = "btdiv" onclick="InputKeyOp('btdiv')"	 value = "/" />
+				<input type="button" id = "bt0"	onclick="InputKeyNum('bt0')" value = "0" />
+				<input type="button" id = "btpoint"	onclick="InputKeyOp('btpoint')" value = "." />
+				<input type="button" id = "btequal"	onclick="Equal()" value = "=" style="width: 128px"/>
+			</div>
+		</div>
+	</body>
+</html>
+<!--js代码块-->
+		<script>
+			//获取按钮
+			function $(id)
+			{
+				return document.getElementById(id);
+			}
+			
+			var ipt_text = $("ipt_text");//获取文本框元素
+			var wait_symbol = "0";// 缓存运算符
+			var IsTruePoint = 1;// 小数点标志位
+			var IsTrueNegnum = 1;	//正负号
+			
+		
+			
+			
+			
+			//输入数字
+			function InputKeyNum(id)
+			{
+				var num = $(id);
+				
+				if((ipt_text.value === "0")||(ipt_text.value === "0.00"))
+				{
+					ipt_text.value = num.value;
+				}
+				else
+				{
+					ipt_text.value = ipt_text.value + num.value;
+				}	
+			}
+			
+			//输入C
+			function clearall()
+			{
+				ipt_text.value  = "0";
+				IsTruePoint = 1;
+				IsTrueNegnum = 1;
+				wait_symbol = "0";
+			}
+			
+			//输入=
+			function Equal()
+			{	var equation;
+				try
+				{	
+					if(wait_symbol!=0)
+					{
+						equation = wait_symbol + ipt_text.value;
+						
+						if(parseFloat(eval(equation)).toFixed(2) == 0)
+						{
+							ipt_text.value = 0;
+						}
+						else
+							ipt_text.value = parseFloat(eval(equation)).toFixed(2);
+					}
+					else{
+						//考虑小数点的情况
+					}
+				}catch(e)
+				{	
+					ipt_text.value = "error";
+				}
+				IsTruePoint = 1;
+				wait_symbol = "0";
+			}
+		
+			
+			function InputKeyOp(id)
+			{
+				var temp = $(id);
+				
+				if((ipt_text.value === "0")||(ipt_text.value === "0.00") &&((temp.value == "+/-")||(temp.value == ".")))
+				{
+					if(temp.value == "+/-")
+					{
+						ipt_text.value = "-0";
+						IsTrueNegnum = 0;	//正负号标志位变0
+					}
+					
+					if(temp.value == ".")
+					{
+						ipt_text.value = "0.";
+						IsTruePoint = 0;
+					}
+				}
+				else if(ipt_text === "0")
+				{
+					
+				}else if(temp.value == "."&& IsTruePoint == 1)
+				{
+					ipt_text.value +=".";
+					IsTruePoint = 0;
+				}else if(temp.value == "+/-")
+				{
+					if(IsTrueNegnum == 1)
+					{
+						ipt_text.value = "-" + ipt_text.value;
+						IsTrueNegnum = 0;
+					}
+					else
+					{
+						ipt_text.value = ipt_text.value.slice(1);
+						IsTrueNegnum = 1;
+					}
+				}
+				else if(temp.value == '+'||temp.value =='-'||temp.value =='*'||temp.value == '/')
+				{
+					if(wait_symbol === "0")
+					{
+						wait_symbol = ipt_text.value + temp.value;
+						ipt_text.value = "";
+						IsTrueNegnum = 1;
+						IsTruePoint = 1;
+					}
+					else
+					{
+						try{
+							if(parseFloat(eval(equation)).toFixed(2) == 0)
+							{
+								ipt_text.value = 0;
+							}
+							else
+								ipt_text.value = parseFloat(eval(equation)).toFixed(2);
+						}catch(e)
+						{					
+							ipt_text.value = "error";
+						}
+						IsTruePoint = 1;
+						wait_symbol = "0";
+						
+					}
+				}
+			}
+			
+		</script>
